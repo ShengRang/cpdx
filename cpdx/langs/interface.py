@@ -3,7 +3,7 @@
 """
 
 
-class Index(object):
+class Parser(object):
 
     def __init__(self, preps=""):
         self.prep_str = preps
@@ -35,7 +35,7 @@ class Processor(object):
     def __init__(self):
         pass
 
-    def __call__(self, tokens):
-        """ 接受 token 序列并返回处理后的 token 序列
+    def __call__(self, *arg, **kwargs):
+        """ 可能是针对 token 的预处理, 也可能是针对 ast 的预处理/后处理.
         """
         raise NotImplementedError()

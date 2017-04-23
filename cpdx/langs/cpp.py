@@ -4,17 +4,17 @@ import functools
 
 import clang
 from clang.cindex import TokenKind
-from interface import Index as BaseIndex, Processor
+from interface import Parser as BaseParser, Processor
 from common import SourceCode, Token, Location
 
 LIBCLANG_PATH = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
 clang.cindex.Config.set_library_path(LIBCLANG_PATH)
 
 
-class Index(BaseIndex):
+class Parser(BaseParser):
 
     def __init__(self):
-        super(Index, self).__init__()
+        super(Parser, self).__init__()
         self.cindex = clang.cindex.Index.create()
         self.source = SourceCode()
 
@@ -27,6 +27,8 @@ class Index(BaseIndex):
                 'spec-punctuation': spec_punc_processor,
                 'ast-cut': ASTCutProcessor(self),
             }.get(p, None)
+            if not prep:
+                print('Warning: no preprocessor {0}'.format(p))
             self.preps.append(prep)
 
     def parse(self, path):
