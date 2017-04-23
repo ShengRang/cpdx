@@ -2,6 +2,11 @@
 """ 通用, 如源码位置操作, token等
 """
 
+import functools
+
+import cpp
+import c
+
 
 class SourceCode(object):
     """
@@ -59,4 +64,14 @@ class Token(object):
 
     def __len__(self):
         return len(self.value)
+
+
+def parser_dispatch(lang="cpp", prep="comment!spec-keyword"):
+    """ Return an instance of spec parser
+    """
+    parser_cls = {
+        "cpp": cpp.Parser,
+        "c": c.Parser,
+    }.get(lang)
+    return parser_cls(prep)
 

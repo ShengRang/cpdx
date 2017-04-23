@@ -13,8 +13,8 @@ clang.cindex.Config.set_library_path(LIBCLANG_PATH)
 
 class Parser(BaseParser):
 
-    def __init__(self):
-        super(Parser, self).__init__()
+    def __init__(self, preps=""):
+        super(Parser, self).__init__(preps)
         self.cindex = clang.cindex.Index.create()
         self.source = SourceCode()
 
