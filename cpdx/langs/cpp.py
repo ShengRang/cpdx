@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import functools
+
 import clang
 from clang.cindex import TokenKind
 from interface import Index as BaseIndex, Processor
@@ -20,9 +22,10 @@ class Index(BaseIndex):
         self.preps = []
         for p in self.prep_str.split('!'):
             prep = {
-                'comment': CommentProcessor,
-                'spec-keyword': SpecKeywordProcessor,
-                'spec-punctuation': SpecPuncProcessor,
+                'comment': comment_processor,
+                'spec-keyword': spec_keyword_processor,
+                'spec-punctuation': spec_punc_processor,
+                'ast-cut': ASTCutProcessor(self),
             }.get(p, None)
             self.preps.append(prep)
 
@@ -41,30 +44,33 @@ class Index(BaseIndex):
     def get_ast(self):
         pass
 
+# 几种 processor 的声明和使用
 
-class CommentProcessor(Processor):
+
+comment_processor = functools.partial(filter, lambda t: t.kind != TokenKind.COMMENT)
+
+
+def spec_keyword_processor(tokens):
+    def f(token):
+        if token.kind == TokenKind.KEYWORD:
+            token = Token(token.value, token.value, token.location)
+        return token
+    return [f(t) for t in tokens]
+
+
+def spec_punc_processor(tokens):
+    def f(token):
+        if token.kind == TokenKind.PUNCTUATION:
+            token = Token(token.value, token.value, token.location)
+        return token
+    return [f(t) for t in tokens]
+
+
+class ASTCutProcessor(Processor):
+
+    def __init__(self, index):
+        super(ASTCutProcessor, self).__init__()
+        self.index = index
 
     def __call__(self, tokens):
-        return filter(lambda t: t.kind != TokenKind.COMMENT, tokens)
-
-
-class SpecKeywordProcessor(Processor):
-
-    def __call__(self, tokens):
-        def f(token):
-            if token.kind == TokenKind.KEYWORD:
-                token = Token(token.value, token.value, token.location)
-            return token
-        return [f(t) for t in tokens]
-
-
-class SpecPuncProcessor(Processor):
-
-    def __call__(self, tokens):
-        def f(token):
-            if token.kind == TokenKind.PUNCTUATION:
-                token = Token(token.value, token.value, token.location)
-            return token
-        return [f(t) for t in tokens]
-
-
+        raise NotImplementedError()
