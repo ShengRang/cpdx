@@ -36,7 +36,10 @@ class Parser(BaseParser):
         self.source.read_from_path(path)
 
     def get_tokens(self):
-        tokens = [Token(t.kind, t.spelling, Location(t.location.line, t.location.column))
+        tokens = [Token(t.kind, t.spelling,
+                        Location(t.location.line, t.location.column,
+                                 self.source.pos(t.location.line,
+                                                 t.location.column)))
                   for t in self.tu.cursor.get_tokens()]
         for prep in self.preps:
             if prep:
@@ -49,7 +52,8 @@ class Parser(BaseParser):
 # 几种 processor 的声明和使用
 
 
-comment_processor = functools.partial(filter, lambda t: t.kind != TokenKind.COMMENT)
+comment_processor = functools.partial(filter,
+                                      lambda t: t.kind != TokenKind.COMMENT)
 
 
 def spec_keyword_processor(tokens):
