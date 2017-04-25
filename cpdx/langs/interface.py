@@ -6,8 +6,9 @@
 class Parser(object):
 
     def __init__(self, preps=""):
-        self.prep_str = preps
+        self.prep_strs = preps.split('!')
         self.preps = []
+        self.setup_prep()
 
     def setup_prep(self):
         pass

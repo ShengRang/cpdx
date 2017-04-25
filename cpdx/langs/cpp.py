@@ -4,8 +4,8 @@ import functools
 
 import clang
 from clang.cindex import TokenKind
-from interface import Parser as BaseParser, Processor
-from common import SourceCode, Token, Location
+from .interface import Parser as BaseParser, Processor
+from .common import SourceCode, Token, Location
 
 LIBCLANG_PATH = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"
 clang.cindex.Config.set_library_path(LIBCLANG_PATH)
@@ -20,7 +20,7 @@ class Parser(BaseParser):
 
     def setup_prep(self):
         self.preps = []
-        for p in self.prep_str.split('!'):
+        for p in self.prep_strs:
             prep = {
                 'comment': comment_processor,
                 'spec-keyword': spec_keyword_processor,
@@ -32,6 +32,7 @@ class Parser(BaseParser):
             self.preps.append(prep)
 
     def parse(self, path):
+        print('parse {0}'.format(path))
         self.tu = self.cindex.parse(path)
         self.source.read_from_path(path)
 
