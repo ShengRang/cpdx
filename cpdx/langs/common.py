@@ -59,16 +59,3 @@ class Token(object):
 
     def __len__(self):
         return len(self.value)
-
-
-def parser_dispatch(lang="cpp", prep="comment!spec-keyword"):
-    """ Return an instance of spec parser
-    """
-    import cpp
-    import c
-    parser_cls = {
-        "cpp": cpp.Parser,
-        "c": c.Parser,
-    }.get(lang)
-    return parser_cls(prep)
-

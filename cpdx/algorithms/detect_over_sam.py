@@ -60,12 +60,12 @@ def cover_len(sam_res):
 def detect2(tokens_a, tokens_b, sam_a=None, sam_b=None, t=5):
     """ 由两个 tokens 进行比较, t 为 token 数量的阈值
     """
-    print 'tokens_a'
-    for token in tokens_a:
-        print token.kind
-    print 'tokens_b'
-    for token in tokens_b:
-        print token.kind
+    # print 'tokens_a'
+    # for token in tokens_a:
+    #     print token.kind
+    # print 'tokens_b'
+    # for token in tokens_b:
+    #     print token.kind
 
     if not isinstance(sam_a, Sam):
         sam_a = Sam(lambda t: t.kind)
@@ -110,8 +110,8 @@ class Detector(BaseDetector):
         for i in range(s):
             for j in range(i+1, s):
                 r2 = detect2(tokens_list[i], tokens_list[j], sams[i], sams[j], len_t)
-                print('{0} - {1}:'.format(filenames[i], filenames[j]))
-                print(r2)
+                # print('{0} - {1}:'.format(filenames[i], filenames[j]))
+                # print(r2)
                 if r2.get('similarity', 0.0) > sim_t:
                     res.append({
                         'src': filenames[i],
