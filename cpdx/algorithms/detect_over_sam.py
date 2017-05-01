@@ -106,17 +106,18 @@ class Detector(BaseDetector):
             sam.build(tokens)
             sams.append(sam)
         s = len(files)
-        res = {}
+        res = []
         for i in range(s):
-            res.setdefault(filenames[i], [])
             for j in range(i+1, s):
                 r2 = detect2(tokens_list[i], tokens_list[j], sams[i], sams[j], len_t)
                 print('{0} - {1}:'.format(filenames[i], filenames[j]))
                 print(r2)
                 if r2.get('similarity', 0.0) > sim_t:
-                    res[filenames[i]].append({
-                        'filename': filenames[j],
-                        'data': r2,
+                    res.append({
+                        'src': filenames[i],
+                        'dst': filenames[j],
+                        'similarity': r2['similarity'],
+                        'pairs': r2['pairs']
                     })
-            res[filenames[i]].sort(key=lambda x: x['data']['similarity'], reverse=True)
+        res.sort(key=lambda x: x['similarity'], reverse=True)
         return res
